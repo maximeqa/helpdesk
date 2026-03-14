@@ -1,0 +1,49 @@
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Your Tickets</h1>
+
+<a href="{{ url_for('main.submit_ticket') }}">Submit New Ticket</a>
+
+<table border="1" cellpadding="5">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Status</th>
+            <th>System Type</th>
+            <th>System</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ticket in tickets %}
+        <tr>
+            <td>{{ ticket.title }}</td>
+            <td>{{ ticket.status }}</td>
+            <td>{{ ticket.system_type }}</td>
+            <td>{{ ticket.system }}</td>
+            <td>{{ ticket.description }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ url_for('auth.logout') }}">Logout</a>
+
+{% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        <ul>
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+
+</div>
+</body>

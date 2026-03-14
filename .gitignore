@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Flask / Env
+.env
+instance/
+db.sqlite3
+*.sqlite
+*.db
+
+# VS Code
+.vscode/
+
+# Bytecode, logs, temp files
+*.log
+*.pot
+*.pyc
+.DS_Store
+*.swp
+*.swo
+
+# Pipenv/Poetry/Virtualenv
+pip-log.txt
+pip-delete-this-directory.txt
+.env.bak
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Coverage/test
+htmlcov/
+coverage.xml
+.tox/
+.nox/
+.pytest_cache/
+.cache/
