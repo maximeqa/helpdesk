@@ -183,7 +183,7 @@ def test_user_cannot_delete_another_users_ticket(client, app):
     with app.app_context():
         other_user = User(
             username='other_user',
-            password=generate_password_hash('OtherPass1!', method='pbkdf2:sha256'),
+            password=generate_password_hash('OtherPass1!').decode('utf-8'),
             role='user'
         )
         db.session.add(other_user)
