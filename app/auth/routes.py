@@ -6,7 +6,7 @@ All routes in this file are prefixed with the auth blueprint.
 from flask import render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required
 from . import auth
-from .. import db
+from .. import db, limiter
 from ..models import User
 from ..forms import LoginForm, RegisterForm
 from werkzeug.security import generate_password_hash, check_password_hash
