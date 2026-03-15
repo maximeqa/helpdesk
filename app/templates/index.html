@@ -1,14 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
-
 <body>
-
 <div class="container">
-
 <h1>Home Page</h1>
 <a href="{{ url_for('auth.login') }}" id="home-login-btn">Login</a>
 <a href="{{ url_for('auth.register') }}" id="home-register-btn">Register</a>
 
 </div>
 </body>
+</html>
