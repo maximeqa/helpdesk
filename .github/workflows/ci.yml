@@ -5,7 +5,7 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [main]
+    branches: [main, fix/ci-tests]
   pull_request:
     branches: [main]
 
@@ -77,6 +77,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
+
+      - name: Debug file structure
+        run: |
+          echo "=== Root ==="
+          ls -la
+          echo "=== Tests folder ==="
+          ls -la tests/
+          echo "=== test_app.py first 5 lines ==="
+          head -5 tests/test_app.py
 
       - name: Run pytest
         run: |
