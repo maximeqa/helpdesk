@@ -5,15 +5,11 @@ All routes in this file are prefixed with the auth blueprint.
 
 from flask import render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 from . import auth
 from .. import db
 from ..models import User
 from ..forms import LoginForm, RegisterForm
 from werkzeug.security import generate_password_hash, check_password_hash
-
-limiter = Limiter(key_func=get_remote_address)
 
 @auth.route('/login', methods=['GET', 'POST'])
 @limiter.limit("10 per minute")

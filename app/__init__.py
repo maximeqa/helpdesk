@@ -4,29 +4,26 @@ This file sets up the Flask application with all necessary extensions.
 """
 
 # Initialise Flask extensions
-from .auth.routes import limiter
+
 from dotenv import load_dotenv
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_talisman import Talisman
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 import os
 
 db = SQLAlchemy()
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
+limiter = Limiter(key_func=get_remote_address)
 
 def create_app():
-
-    """
-    Application factory function that creates and configures the Flask app.
-    Returns a configured Flask application instance.
-    """
-
     app = Flask(__name__)
     load_dotenv()
-    app.config['SECRET_KEY'] =os.getenv('SECRET_KEY')
-    app.config['SQLALCHEMY_DATABASE_URI'] =os.getenv('DATABASE_URI')
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 
     csp = {
         'default-src': "'self'",
