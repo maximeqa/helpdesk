@@ -22,13 +22,14 @@ def admin_home():
     Admin dashboard displaying all tickets and tickets assigned to current admin.
     Only accessible to users with admin role.
     """
-
+def admin_home():
     if not current_user.is_admin():
         return redirect(url_for('main.user_home'))
+    form = TicketForm()
     all_tickets = Ticket.query.all()
     my_tickets = Ticket.query.filter_by(assignee_id=current_user.id).all()
     admins = User.query.filter_by(role='admin').all()
-    return render_template('admin_home.html', all_tickets=all_tickets, my_tickets=my_tickets, admins=admins)
+    return render_template('admin_home.html', form=form, all_tickets=all_tickets, my_tickets=my_tickets, admins=admins)
 
 @main.route('/user')
 @login_required
@@ -65,6 +66,7 @@ def update_ticket(ticket_id):
     return redirect(url_for('main.admin_home'))
 
 @main.route('/delete_ticket/<int:ticket_id>', methods=['POST'])
+@login_required
 def delete_ticket(ticket_id):
     """
     Delete a ticket from the system.
@@ -72,9 +74,15 @@ def delete_ticket(ticket_id):
     """
 
     ticket = Ticket.query.get_or_404(ticket_id)
+    if not current_user.is_admin() and ticket.user_id != current_user.id:
+        flash('Unauthorised action.', 'danger')
+        return redirect(url_for('main.user_home'))
     db.session.delete(ticket)
     db.session.commit()
-    return redirect(url_for('main.admin_home'))
+    flash('Ticket deleted.', 'warning')
+    if current_user.is_admin():
+        return redirect(url_for('main.admin_home'))
+    return redirect(url_for('main.user_home'))
 
 @main.route('/submit-ticket', methods=['GET','POST'])
 @login_required

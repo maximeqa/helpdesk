@@ -6,9 +6,14 @@ from waitress import serve
 from app import create_app
 
 def main():
+    from app import db, seed_database
     app = create_app()
     app.config['DEBUG'] = False
-    
+
+    with app.app_context():
+        db.create_all()
+        seed_database()
+
     port = int(os.environ.get('PORT', 10000))
     
     print(f"Starting server on port {port}")
