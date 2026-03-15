@@ -12,9 +12,11 @@ from flask_login import LoginManager
 from flask_talisman import Talisman
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from flask_bcrypt import Bcrypt
 import os
 
 db = SQLAlchemy()
+bcrypt = Bcrypt()
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 limiter = Limiter(key_func=get_remote_address)
@@ -32,6 +34,7 @@ def create_app():
     Talisman(app, content_security_policy=csp, force_https=False)
 
     db.init_app(app)
+    bcrypt.init_app(app)
     login_manager.init_app(app)
     limiter.init_app(app)
 
@@ -48,35 +51,31 @@ def seed_database():
     Populate the database with sample records if it is empty.
     """
     from .models import User, Ticket
-    from werkzeug.security import generate_password_hash
-
-    if User.query.first() is not None:
-        print("Database already seeded, skipping.")
-        return
+    from . import bcrypt
 
     admin1 = User(
         username='alice_admin',
-        password=generate_password_hash('AdminPass1!', method='pbkdf2:sha256'),
+        password=bcrypt.generate_password_hash('AdminPass1!').decode('utf-8'),
         role='admin'
     )
     admin2 = User(
         username='bob_admin',
-        password=generate_password_hash('AdminPass2!', method='pbkdf2:sha256'),
+        password=bcrypt.generate_password_hash('AdminPass2!').decode('utf-8'),
         role='admin'
     )
     user1 = User(
         username='charlie_user',
-        password=generate_password_hash('UserPass1!', method='pbkdf2:sha256'),
+        password=bcrypt.generate_password_hash('UserPass1!').decode('utf-8'),
         role='user'
     )
     user2 = User(
         username='diana_user',
-        password=generate_password_hash('UserPass2!', method='pbkdf2:sha256'),
+        password=bcrypt.generate_password_hash('UserPass2!').decode('utf-8'),
         role='user'
     )
     user3 = User(
         username='eve_user',
-        password=generate_password_hash('UserPass3!', method='pbkdf2:sha256'),
+        password=bcrypt.generate_password_hash('UserPass3!').decode('utf-8'),
         role='user'
     )
 

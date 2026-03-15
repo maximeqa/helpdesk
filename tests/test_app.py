@@ -6,7 +6,7 @@ Run with: pytest tests/tests.py -v
 import pytest
 from app import create_app, db
 from app.models import User, Ticket
-from werkzeug.security import generate_password_hash
+from flask_bcrypt import generate_password_hash
 
 #Fixtures
 
@@ -34,16 +34,18 @@ def client(app):
 
 def _seed_test_data():
     """Insert minimal test records into the in-memory database."""
+
     admin = User(
         username='test_admin',
-        password=generate_password_hash('AdminPass1!', method='pbkdf2:sha256'),
+        password=generate_password_hash('AdminPass1!').decode('utf-8'),
         role='admin'
     )
     user = User(
         username='test_user',
-        password=generate_password_hash('UserPass1!', method='pbkdf2:sha256'),
+        password=generate_password_hash('UserPass1!').decode('utf-8'),
         role='user'
     )
+
     db.session.add_all([admin, user])
     db.session.commit()
 
