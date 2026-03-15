@@ -4,14 +4,10 @@ services:
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: python render_server.py
-    disk:
-      name: helpdesk-db
-      mountPath: /data
-      sizeGB: 1
     envVars:
       - key: SECRET_KEY
         generateValue: true
       - key: DATABASE_URI
-        value: sqlite:////data/help-desk.db
+        value: sqlite:///help-desk.db
       - key: FLASK_ENV
         value: production
