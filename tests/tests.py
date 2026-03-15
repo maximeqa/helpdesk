@@ -1,6 +1,6 @@
 """
 Pytest test suite covering authentication, access control, and ticket CRUD.
-Run with: pytest tests/test_app.py -v
+Run with: pytest tests/tests.py -v
 """
 
 import pytest
