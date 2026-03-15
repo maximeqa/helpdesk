@@ -22,7 +22,6 @@ def admin_home():
     Admin dashboard displaying all tickets and tickets assigned to current admin.
     Only accessible to users with admin role.
     """
-def admin_home():
     if not current_user.is_admin():
         return redirect(url_for('main.user_home'))
     form = TicketForm()
