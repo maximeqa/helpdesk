@@ -1,199 +1,252 @@
-# Flask Ticketing System
+# IT Help Desk Ticketing System
 
-A modern web-based ticketing system built with Flask that allows users to submit support tickets and administrators to manage them efficiently.
+A secure web-based IT Help Desk Ticketing System built with Python and Flask, developed using a DevOps approach with a fully automated CI/CD pipeline.
+
+## Live Application
+
+🔗 [your-render-url-here]
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Security](#security)
+- [Project Structure](#project-structure)
+- [Running Locally](#running-locally)
+- [Running Tests](#running-tests)
+- [CI/CD Pipeline](#cicd-pipeline)
+- [Deployment](#deployment)
+- [Sample Credentials](#sample-credentials)
+
+---
+
+## Overview
+
+This application allows regular users to submit and manage IT support tickets, while administrators can assign, update, and manage all tickets and user accounts. It was developed as part of a university assignment demonstrating secure web application development and DevOps practices.
+
+---
 
 ## Features
 
-### User Features
-- **User Registration & Login**: Secure account creation and authentication
-- **Ticket Submission**: Create support tickets with system type, description, and priority
-- **View Personal Tickets**: Track status of submitted tickets
-- **Ticket Management**: Delete own tickets when needed
+**Regular Users**
+- Register and log in securely
+- Submit support tickets with title, system type, system name, and description
+- View and delete their own tickets
 
-### Admin Features
-- **Admin Dashboard**: Overview of all tickets and assigned tickets
-- **Ticket Assignment**: Assign tickets to specific administrators
-- **Status Management**: Update ticket status (Open, In Progress, Closed)
-- **User Management**: Promote/demote users, manage user accounts
-- **Ticket Oversight**: View and manage all tickets in the system
+**Administrators**
+- View all tickets across all users
+- Assign tickets to admin staff
+- Update ticket status (Open / In Progress / Closed)
+- Promote, demote, and delete user accounts
+- Delete any ticket
 
-## Technology Stack
+---
 
-- **Backend**: Flask (Python web framework)
-- **Database**: SQLAlchemy ORM with SQLite/PostgreSQL support
-- **Authentication**: Flask-Login for session management
-- **Forms**: WTForms for form validation and rendering
-- **Frontend**: HTML templates with modern CSS styling
-- **Security**: Werkzeug password hashing (PBKDF2-SHA256)
+## Tech Stack
 
-## Installation
+| Layer | Technology |
+|---|---|
+| Language | Python 3.11 |
+| Web Framework | Flask |
+| Database | SQLite via SQLAlchemy ORM |
+| Authentication | Flask-Login |
+| Form Handling | Flask-WTF / WTForms |
+| Password Hashing | Flask-Bcrypt |
+| Rate Limiting | Flask-Limiter |
+| Security Headers | Flask-Talisman |
+| Production Server | Waitress |
+| Testing | pytest |
+| Linting | flake8 |
+| Security Scanning | bandit |
+| CI/CD | GitHub Actions |
+| Deployment | Render |
+
+---
+
+## Security
+
+The application is hardened against the following OWASP Top 10 vulnerabilities:
+
+**A01 — Broken Access Control**
+- `@login_required` on all protected routes
+- Role checks on every admin route
+- Ownership verification before ticket deletion — users cannot delete other users' tickets
+
+**A03 — Injection**
+- All database queries use SQLAlchemy ORM with parameterised queries
+- No raw SQL strings anywhere in the codebase
+
+**A07 — Identification and Authentication Failures**
+- Passwords hashed with bcrypt (`$2b$` prefix, work factor 12)
+- Login route rate limited to 10 requests per minute per IP via Flask-Limiter
+- CSRF tokens on all forms via Flask-WTF
+
+**A05 — Security Misconfiguration**
+- HTTP security headers applied globally via Flask-Talisman:
+  - `X-Frame-Options`
+  - `X-Content-Type-Options`
+  - `Content-Security-Policy`
+- Secret key and database URI loaded from environment variables, never hardcoded
+- `.env` file excluded from version control via `.gitignore`
+
+---
+
+## Project Structure
+```
+helpdesk/
+├── .github/
+│   └── workflows/
+│       └── ci.yml              # GitHub Actions CI/CD pipeline
+├── app/
+│   ├── __init__.py             # App factory, extensions, seed function
+│   ├── models.py               # SQLAlchemy User and Ticket models
+│   ├── forms.py                # WTForms form definitions
+│   ├── auth/
+│   │   ├── __init__.py         # Auth blueprint
+│   │   └── routes.py           # Login, register, logout routes
+│   ├── main/
+│   │   ├── __init__.py         # Main blueprint
+│   │   └── routes.py           # Ticket and user management routes
+│   └── templates/
+│       ├── index.html
+│       ├── login.html
+│       ├── register.html
+│       ├── user_home.html
+│       ├── admin_home.html
+│       ├── manage_users.html
+│       └── submit_ticket.html
+├── tests/
+│   ├── __init__.py
+│   └── test_app.py             # 16 pytest tests
+├── conftest.py                 # pytest path configuration
+├── pytest.ini                  # pytest settings
+├── render.yaml                 # Render deployment configuration
+├── render_server.py            # Waitress production server
+├── run.py                      # Local development entry point
+├── requirements.txt
+└── .gitignore
+```
+
+---
+
+## Running Locally
 
 ### Prerequisites
-- Python 3.7 or higher
-- pip (Python package manager)
+- Python 3.11+
+- pip
 
-### Setup Instructions
+### Setup
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd flask-ticketing-system
-   ```
+1. Clone the repository:
+```bash
+git clone https://github.com/your-username/your-repo-name.git
+cd your-repo-name
+```
 
-2. **Create a virtual environment**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
+2. Create and activate a virtual environment:
+```bash
+python -m venv venv
+source venv/bin/activate        # Mac/Linux
+venv\Scripts\activate           # Windows
+```
 
-3. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
 
-4. **Environment Configuration**
-   Create a `.env` file in the root directory:
-   ```env
-   SECRET_KEY=your-secret-key-here
-   DATABASE_URI=sqlite:///ticketing.db
-   ```
+4. Create a `.env` file in the project root:
+```
+SECRET_KEY=your-local-secret-key
+DATABASE_URI=sqlite:///help-desk.db
+```
 
-5. **Initialise the database**
-   ```bash
-   python run.py
-   ```
-   *The database will be created automatically on first run.*
-
-## Usage
-
-### Starting the Application
+5. Run the application:
 ```bash
 python run.py
 ```
-The application will be available at `http://localhost:5000`
 
-### First Time Setup
-1. Navigate to the registration page
-2. Create your first user account
-3. Manually promote the first user to admin in the database
+The app will be available at `http://127.0.0.1:5000`. The database is created and seeded automatically on first run.
 
-### User Workflow
-1. **Register/Login** - Create an account or log into existing account
-2. **Submit Tickets** - Create new support tickets with relevant details
-3. **Track Progress** - Monitor ticket status and updates
-4. **Manage Tickets** - Delete tickets when resolved
+---
 
-### Admin Workflow
-1. **Admin Dashboard** - View all tickets and assigned tickets
-2. **Assign Tickets** - Assign tickets to administrators
-3. **Update Status** - Change ticket status as work progresses
-4. **User Management** - Promote users to admin, manage accounts
-
-## Project Structure
-
-```
-help-desk/
-├── app/
-│   ├── __init__.py              # Application factory
-│   ├── models.py                # Database models
-│   ├── forms.py                 # WTForms definitions
-│   ├── auth/
-│   │   ├── __init__.py          # Auth blueprint
-│   │   └── routes.py            # Authentication routes
-│   ├── main/
-│   │   ├── __init__.py          # Main blueprint
-│   │   └── routes.py            # Main application routes
-│   ├── static/
-│   │   └── styles.css           # Application styling
-│   └── templates/
-│       ├── index.html           # Home page
-│       ├── login.html           # Login form
-│       ├── register.html        # Registration form
-│       ├── user_home.html       # User dashboard
-│       ├── admin_home.html      # Admin dashboard
-│       ├── submit_ticket.html   # Ticket submission form
-│       └── manage_users.html    # User management interface
-├── requirements.txt             # Python dependencies
-├── run.py                      # Application entry point
-└── .env                        # Environment variables
-```
-
-## Database Schema
-
-### User Table
-- `id` (Primary Key)
-- `username` (Unique)
-- `password` (Hashed)
-- `role` (user/admin)
-
-### Ticket Table
-- `id` (Primary Key)
-- `title`
-- `description`
-- `system_type` (Hardware/Software)
-- `system`
-- `status` (Open/In Progress/Closed)
-- `user_id` (Foreign Key to User)
-- `assignee_id` (Foreign Key to User - Admin)
-
-## Security Features
-
-- **Password Hashing**: PBKDF2-SHA256 encryption for stored passwords
-- **Session Management**: Flask-Login handles user sessions securely
-- **CSRF Protection**: WTForms provides CSRF token validation
-- **Role-based Access**: Admin-only routes protected with decorators
-- **Input Validation**: Server-side validation for all form inputs
-
-## Configuration
-
-### Environment Variables
-- `SECRET_KEY`: Flask secret key for session encryption
-- `DATABASE_URI`: Database connection string
-
-### Default Settings
-- **Database**: SQLite
-- **Debug Mode**: Enabled in development
-- **Session Timeout**: Handled by Flask-Login defaults
-
-## API Endpoints
-
-### Authentication Routes (`/auth/`)
-- `GET/POST /login` - User login
-- `GET/POST /register` - User registration
-- `GET /logout` - User logout
-
-### Main Application Routes (`/`)
-- `GET /` - Home page
-- `GET /user` - User dashboard
-- `GET /admin` - Admin dashboard
-- `GET/POST /submit-ticket` - Ticket submission
-- `POST /update-ticket/<id>` - Update ticket status/assignment
-- `POST /delete-ticket/<id>` - Delete ticket
-- `GET /admin/manage-users` - User management interface
-- `POST /admin/manage-users/<id>/promote` - Promote user to admin
-- `POST /admin/manage-users/<id>/demote` - Demote admin to user
-- `POST /admin/users-edit/<id>/delete` - Delete user account
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/new-feature`)
-3. Commit your changes (`git commit -am 'Add new feature'`)
-4. Push to the branch (`git push origin feature/new-feature`)
-5. Create a Pull Request
-
-## Development
-
-### Running in Development Mode
+## Running Tests
 ```bash
-export FLASK_ENV=development  # On Windows: set FLASK_ENV=development
-python render_server.py
+pytest tests/ -v
 ```
 
+The test suite runs against an in-memory SQLite database — no setup required. All 16 tests should pass.
 
-## Support
+### What is tested
+- Valid and invalid login attempts
+- User registration including duplicate username handling
+- Logout
+- Unauthenticated access to protected routes
+- Regular user attempting to access admin routes
+- Ticket submission
+- Authorisation on ticket deletion (user cannot delete another user's ticket)
+- Admin can delete any ticket
+- Unauthenticated delete attempt
 
-For issues and questions:
-- Check existing issues in the repository
-- Create a new issue with detailed description
-- Include steps to reproduce any bugs
+---
+
+## CI/CD Pipeline
+
+The pipeline runs automatically on every push to `main` and every pull request via GitHub Actions.
+```
+Push to GitHub
+      │
+      ▼
+┌─────────────┐
+│  Lint       │  flake8 — checks code style and syntax
+│  (flake8)   │
+└──────┬──────┘
+       │ pass
+       ▼
+┌─────────────┐
+│  Security   │  bandit — static analysis for security vulnerabilities
+│  (bandit)   │
+└──────┬──────┘
+       │ pass
+       ▼
+┌─────────────┐
+│  Test       │  pytest — runs all 16 unit and integration tests
+│  (pytest)   │
+└──────┬──────┘
+       │ pass
+       ▼
+┌─────────────┐
+│  Deploy     │  Render auto-deploys on merge to main
+│  (Render)   │
+└─────────────┘
+```
+
+Each job must pass before the next runs. A failure at any stage blocks deployment.
+
+---
+
+## Deployment
+
+The application is deployed on [Render](https://render.com) using Waitress as the production WSGI server.
+
+- Auto-deploys on every push to `main`
+- Database is created and seeded automatically on startup
+- Environment variables managed via Render dashboard
+- `DATABASE_URI` and `SECRET_KEY` are never committed to the repository
+
+---
+
+## Sample Credentials
+
+The following accounts are created automatically when the application starts:
+
+| Username | Password | Role |
+|---|---|---|
+| `alice_admin` | `AdminPass1!` | Admin |
+| `bob_admin` | `AdminPass2!` | Admin |
+| `charlie_user` | `UserPass1!` | User |
+| `diana_user` | `UserPass2!` | User |
+| `eve_user` | `UserPass3!` | User |
+-
+
