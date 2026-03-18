@@ -4,7 +4,7 @@ A secure web-based IT Help Desk Ticketing System built with Python and Flask, de
 
 ## Live Application
 
-🔗 [your-render-url-here]
+🔗 https://helpdesk-r5vz.onrender.com/
 
 ## Table of Contents
 
@@ -64,34 +64,6 @@ This application allows regular users to submit and manage IT support tickets, w
 
 ---
 
-## Security
-
-The application is hardened against the following OWASP Top 10 vulnerabilities:
-
-**A01 — Broken Access Control**
-- `@login_required` on all protected routes
-- Role checks on every admin route
-- Ownership verification before ticket deletion — users cannot delete other users' tickets
-
-**A03 — Injection**
-- All database queries use SQLAlchemy ORM with parameterised queries
-- No raw SQL strings anywhere in the codebase
-
-**A07 — Identification and Authentication Failures**
-- Passwords hashed with bcrypt (`$2b$` prefix, work factor 12)
-- Login route rate limited to 10 requests per minute per IP via Flask-Limiter
-- CSRF tokens on all forms via Flask-WTF
-
-**A05 — Security Misconfiguration**
-- HTTP security headers applied globally via Flask-Talisman:
-  - `X-Frame-Options`
-  - `X-Content-Type-Options`
-  - `Content-Security-Policy`
-- Secret key and database URI loaded from environment variables, never hardcoded
-- `.env` file excluded from version control via `.gitignore`
-
----
-
 ## Project Structure
 ```
 helpdesk/
@@ -140,8 +112,8 @@ helpdesk/
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-username/your-repo-name.git
-cd your-repo-name
+git clone https://github.com/maximeqa/helpdesk.git
+cd helpdesk
 ```
 
 2. Create and activate a virtual environment:
